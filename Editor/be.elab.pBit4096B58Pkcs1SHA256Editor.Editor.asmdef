@@ -1,0 +1,16 @@
+
+{                                                                   
+            "name": "be.elab.pBit4096B58Pkcs1SHA256Editor",          
+    "references": ["be.elab.pBit4096B58Pkcs1SHA256"
+],                                                              
+    "optionalUnityReferences": [],                                  
+    "includePlatforms": [                                           
+        "Editor"                                                    
+    ],                                                              
+    "excludePlatforms": [],                                         
+    "allowUnsafeCode": false,                                       
+    "overrideReferences": false,                                    
+    "precompiledReferences": [],                                    
+    "autoReferenced": true,                                         
+    "defineConstraints": []                                         
+}                                                                   
