@@ -1,3 +1,5 @@
+[https://emn178.github.io/online-tools/sha256.html](https://emn178.github.io/online-tools/sha256.html)
+
 It seems you're referring to **SHA-256**, which is a cryptographic hash function. Here's a detailed explanation:
 
 ---
