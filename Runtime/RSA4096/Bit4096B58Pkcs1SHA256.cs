@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using UnityEngine;
 
 
@@ -111,8 +112,47 @@ namespace  Eloi
             BytesToBase58(signatureAsBytes, out signatureAsBase58);
         }
 
+        public static bool TryToCreateFromPrivateKeyAnyType(string key,
+            out string publicKey,
+            out string privateKey,
+            out string publicKeyAsB58,
+            out string privateKeyAsB58
+            )
+        {
+            try { 
+            
+                bool created = false;
+                if (key.StartsWith(START_PRIVATE_KEY))
+                {
+                    CreateFromBase58PrivateKeyFormat(key, out publicKey, out privateKey, out publicKeyAsB58);
+                    privateKeyAsB58 = key;
+                    created = true;
+                }
+                else
+                {
+                    CreateFromPrivateKeyXmlToBase58(
+                        key,
+                        out publicKey,
+                        out privateKeyAsB58,
+                        out publicKeyAsB58);
+                    privateKey = key;
+                    created = true;
+                }
+                return created;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                publicKey = "";
+                privateKey = "";
+                publicKeyAsB58 = "";
+                privateKeyAsB58 = "";
+                return false;
+            }
 
-        public static void CreateFromPrivateKeyAsBase58(
+        }
+
+        public static void CreateFromPrivateKeyXmlToBase58(
             string xmlPrivateKey4096
             , out string resultingPublicKey
             , out string privateKeyAsTextBase58
@@ -130,6 +170,33 @@ namespace  Eloi
                 privateKeyAsTextBase58 = START_PRIVATE_KEY + b58PrivateKey;
                 publicKeyAsTextBase58 = START_PUBLIC_KEY + b58PublicAddress;
 
+            }
+        }
+        public static void CreateFromBase58PrivateKeyFormat(
+             string privateKeyAsB58,
+            out string publicKey, 
+            out string privateKeyXml, 
+            out string publicKeyAsB58)
+        {
+            privateKeyAsB58 = privateKeyAsB58.Trim();
+            if (privateKeyAsB58.StartsWith(START_PRIVATE_KEY))
+            {
+                string key = privateKeyAsB58.Substring(START_PRIVATE_KEY.Length);
+                Base58ToString(key, out privateKeyXml);
+                using (var rsa = RSA.Create())
+                {
+                    rsa.FromXmlString(privateKeyXml);
+                    publicKey = rsa.ToXmlString(false);
+                    StringToBaseBase58(publicKey
+                        , out publicKeyAsB58);
+                    publicKeyAsB58 = START_PUBLIC_KEY + publicKeyAsB58;
+                }
+            }
+            else {
+
+                privateKeyXml = "";
+                publicKey = "";
+                publicKeyAsB58 = "";
             }
         }
 
@@ -231,7 +298,6 @@ namespace  Eloi
             bytes = Base58Encoder.Base58Decode(b58);
         }
 
-
-
+      
     }
 }
